@@ -17,7 +17,7 @@ interface RefreshTokenResponse {
     refreshToken: string;
 }
 
-const API_BASE_URL = "https://localhost:7019/api";
+const API_BASE_URL = "https://localhost:7194/api";
 const AUTH_ENDPOINTS = {
     LOGIN: "/authentication/login",
     REFRESH_TOKEN: "/authentication/refresh-token",
@@ -159,7 +159,7 @@ class ApiService {
 
     private registerServices() {
         try {
-            const modules = import.meta.glob('./service/*.service.ts', { 
+            const modules = import.meta.glob('./services/*.service.ts', { 
                 eager: true 
             });
 

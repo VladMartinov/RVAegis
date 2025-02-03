@@ -1,6 +1,8 @@
 <template>
     <a-config-provider :locale="ruRU">
-        <RouterView />
+        <a-app :style="{ height: 'inherit' }">
+            <RouterView />
+        </a-app>
     </a-config-provider>
 </template>
 

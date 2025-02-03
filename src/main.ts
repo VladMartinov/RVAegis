@@ -10,8 +10,9 @@ import api from './api';
 
 const app = createApp(App);
 
+app.use(Antd);
+
 app.use(createPinia());
 app.use(router);
-app.use(api);
 
-app.use(Antd).mount('#app');
+app.mount('#app');
