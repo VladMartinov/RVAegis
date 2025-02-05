@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { UserRoleEnum } from '@/utils/enum';
 import LoginView from '@/views/LoginView.vue';
+import { useHistoryStore } from '@/stores/history';
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,35 +44,44 @@ const router = createRouter({
             },
             path: "/",
             name: "Layout",
-            component: import("@/views/LayoutView.vue"),
+            component: () => import("@/views/LayoutView.vue"),
             redirect: "/cameras",
             children: [
-                //{
-                //    path: "/cameras",
-                //    name: "cameras",
-                //    component: import("@/views/CamerasView.vue"),
-                //},
-                //{
-                //    path: "/images",
-                //    name: "images",
-                //    component: import("@/views/ImagesView.vue"),
-                //},
-                //{
-                //    path: "/users",
-                //    name: "users",
-                //    component: import("@/views/UsersView.vue"),
-                //    meta: {
-                //        accessRole: [UserRoleEnum.Observer, UserRoleEnum.Admin],
-                //    },
-                //},
-                //{
-                //    path: "/history",
-                //    name: "history",
-                //    component: import("@/views/HistoryView.vue"),
-                //    meta: {
-                //        accessRole: [UserRoleEnum.Observer, UserRoleEnum.Admin],
-                //    },
-                //},
+                {
+                    path: "/cameras",
+                    name: "cameras",
+                    component: () => import("@/views/CamerasView.vue"),
+                },
+                {
+                    path: "/images",
+                    name: "images",
+                    component: () => import("@/views/ImagesView.vue"),
+                },
+                {
+                    path: "/users",
+                    name: "users",
+                    component: () => import("@/views/UsersView.vue"),
+                    meta: {
+                        accessRole: [UserRoleEnum.Observer, UserRoleEnum.Admin],
+                    },
+                },
+                {
+                    beforeEnter: (to, from, next) => {
+                        const historyStore = useHistoryStore();
+
+                        historyStore.fetchData()
+                            .then(() => {
+                                next();
+                            })
+                            .catch(() => {});
+                    },
+                    path: "/history",
+                    name: "history",
+                    component: () => import("@/views/HistoryView.vue"),
+                    meta: {
+                        accessRole: [UserRoleEnum.Observer, UserRoleEnum.Admin],
+                    },
+                },
             ],
         },
     ],

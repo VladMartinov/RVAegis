@@ -3,7 +3,7 @@ import axios, {
     type AxiosRequestConfig,
     type AxiosResponse,
     type InternalAxiosRequestConfig
-    } from "axios";
+} from "axios";
 import router from "@/router";
 
 type ApiRequestConfig = AxiosRequestConfig & { 
@@ -62,16 +62,13 @@ class AuthHandler {
             this.isRefreshing = true;
 
             try {
-                const { data } = await this.axiosInstance.post<RefreshTokenResponse>(
-                  AUTH_ENDPOINTS.REFRESH_TOKEN
+                await this.axiosInstance.post<RefreshTokenResponse>(
+                    AUTH_ENDPOINTS.REFRESH_TOKEN
                 );
 
-                this.updateAuthHeaders(data.token);
                 this.isRefreshing = false;
-                this.retryQueuedRequests();
                 return this.axiosInstance(originalRequest);
             } catch (refreshError) {
-                this.clearAuth();
                 router.replace("/login");
                 return Promise.reject(refreshError);
             }
@@ -89,18 +86,6 @@ class AuthHandler {
                 onRetry: retryInterceptor
             });
         });
-    }
-
-    private updateAuthHeaders(token: string) {
-        this.axiosInstance.defaults.headers.common.Authorization = `Bearer ${token}`;
-    }
-
-    private clearAuth() {
-        delete this.axiosInstance.defaults.headers.common.Authorization;
-    }
-
-    private retryQueuedRequests() {
-        // TODO: Логика повторения запросов из очереди
     }
 }
 
