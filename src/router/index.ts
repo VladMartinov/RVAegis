@@ -2,7 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { UserRoleEnum } from '@/utils/enum';
 import LoginView from '@/views/LoginView.vue';
-import { useHistoryStore } from '@/stores/history';
+import { useHistoryStore } from '@/stores/historyStore';
+import { useUserStore } from '@/stores/userStore';
+import { useImageStore } from '@/stores/imageStore';
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -53,11 +55,29 @@ const router = createRouter({
                     component: () => import("@/views/CamerasView.vue"),
                 },
                 {
+                  beforeEnter: (to, from, next) => {
+                      const imageStore = useImageStore();
+
+                      imageStore.fetchData()
+                          .then(() => {
+                              next();
+                          })
+                          .catch(() => {});
+                  },
                     path: "/images",
                     name: "images",
                     component: () => import("@/views/ImagesView.vue"),
                 },
                 {
+                    beforeEnter: (to, from, next) => {
+                        const userStore = useUserStore();
+
+                        userStore.fetchData()
+                            .then(() => {
+                                next();
+                            })
+                            .catch(() => {});
+                    },
                     path: "/users",
                     name: "users",
                     component: () => import("@/views/UsersView.vue"),

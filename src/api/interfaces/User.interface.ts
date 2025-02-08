@@ -24,3 +24,13 @@ export interface UserUDto {
     email: string;
     photo?: string | null;
 }
+
+export interface UserStatusDto {
+    statusId: number;
+    statusTitle: string;
+}
+
+export interface UserRoleDto {
+    roleId: number;
+    roleTitle: string;
+}

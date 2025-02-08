@@ -42,7 +42,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { useHistoryStore } from '@/stores/history';
+import { useHistoryStore } from '@/stores/historyStore';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 

@@ -5,12 +5,32 @@
             <a-button type="primary" @click="endStream">Остановка потока</a-button>
         </a-space>
 
-        <canvas ref="frame" :style="{ 
-            width: '100%', 
-            height: '100%', 
-            backgroundColor: '#000000', 
-            borderRadius: '6px' 
-        }"></canvas>
+        <div style="position: relative; width: 100%; height: 100%;">
+            <canvas 
+                ref="frame" 
+                :style="{ 
+                    width: '100%', 
+                    height: '100%', 
+                    backgroundColor: '#000000', 
+                    borderRadius: '6px' 
+                }"
+            ></canvas>
+            <div 
+                v-if="!isStreamActive" 
+                style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    color: white;
+                    font-size: 20px;
+                    font-weight: bold;
+                    text-align: center;
+                "
+            >
+                Подключение отсутствует
+            </div>
+        </div>
     </a-flex>
 </template>
 
@@ -30,10 +50,12 @@ const websocket = reactive<WebSocketState>({
 const fps = ref(0);
 const fpsToView = ref(0);
 const frame = ref<HTMLCanvasElement | null>(null);
+const isStreamActive = ref(false);
 
 const startStream = () => {
     if (websocket.core) return;
 
+    isStreamActive.value = true;
     websocket.core = new WebSocket("wss://localhost:7194/");
     websocket.fpsUpdate = window.setInterval(() => {
         fpsToView.value = fps.value;
@@ -78,6 +100,7 @@ const endStream = () => {
 
     websocket.core.close();
     websocket.core = null;
+    isStreamActive.value = false;
 
     if (websocket.fpsUpdate) {
         clearInterval(websocket.fpsUpdate);

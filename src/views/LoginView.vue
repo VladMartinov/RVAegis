@@ -15,6 +15,7 @@
                             name="login_form"
                             class="login-form"
                             :label-col="{ span: 4 }"
+                            @keyup.enter="handleLogInClick"
                         >
                             <a-form-item
                                 label="Логин"
@@ -118,11 +119,4 @@ const handleLogInClick = function() {
             spin.value = false;
         })
 }
-
-const onFinish = (values: any) => {
-    console.log('Success:', values);
-};
-const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-};
 </script>

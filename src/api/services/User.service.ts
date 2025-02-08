@@ -1,9 +1,17 @@
-import type { UserCDto, UserRDto, UserUDto } from "@/api/interfaces";
+import type { UserCDto, UserRDto, UserUDto, UserRoleDto, UserStatusDto } from "@/api/interfaces";
 
 export default (api: any) => {
     api.user = {
         getAllUsers(): Promise<{ data: UserRDto[] }> {
             return api.instance.get("/users");
+        },
+
+        getAllUsersRoles(): Promise<{ data: UserRoleDto[] }> {
+            return api.instance.get("/users/users-roles");
+        },
+
+        getAllUsersStatuses(): Promise<{ data: UserStatusDto[] }> {
+            return api.instance.get("/users/users-statuses");
         },
 
         createUser(userData: UserCDto): Promise<{ data: UserCDto }> {
