@@ -1,6 +1,12 @@
 <template>
     <a-flex gap="15" vertical align="flex-end">
         <a-space>
+            <a-select v-model:value="selectedCamera" :disabled="!cameras.length" placeholder="Выберите камеру" style="width: 200px">
+                <a-select-option v-for="camera in cameras" :key="camera" :value="camera">
+                    Камера {{ camera }}
+                </a-select-option>
+            </a-select>
+
             <a-button type="primary" @click="startStream">Запуск потока</a-button>
             <a-button type="primary" @click="endStream">Остановка потока</a-button>
         </a-space>
@@ -16,7 +22,7 @@
                 }"
             ></canvas>
             <div 
-                v-if="!isStreamActive" 
+                v-if="!(isStreamActive || (selectedCamera && selectedCamera >= 0))"
                 style="
                     position: absolute;
                     top: 50%;
@@ -51,6 +57,8 @@ const fps = ref(0);
 const fpsToView = ref(0);
 const frame = ref<HTMLCanvasElement | null>(null);
 const isStreamActive = ref(false);
+const selectedCamera = ref<number | null>(null);
+const cameras = ref<number[]>([]);
 
 const startStream = () => {
     if (websocket.core) return;
@@ -63,31 +71,36 @@ const startStream = () => {
     }, 1000);
 
     websocket.core.onmessage = (event) => {
-        if (event.data instanceof Blob && frame.value) {
-            fps.value++;
+        const data = JSON.parse(event.data);
+        if (!(data.cameraIndex || data.cameraIndex === 0) || !(data.images && data.images.length)) return;
 
-            const blob = event.data;
-            const image = new Image();
-            const ctx = frame.value.getContext('2d');
+        cameras.value = data.cameras;
 
-            if (!ctx) return;
+        if (selectedCamera.value && !cameras.value.includes(selectedCamera.value)) selectedCamera.value = null;
+        if (data.cameraIndex !== selectedCamera.value) return;
 
-            const reader = new FileReader();
-            reader.onload = () => {
-                image.onload = () => {
-                    ctx.clearRect(0, 0, frame.value!.width, frame.value!.height);
-                    ctx.drawImage(image, 0, 0, frame.value!.width, frame.value!.height);
-                };
-                image.src = reader.result as string;
-            };
-            reader.readAsDataURL(blob);
-        }
+        fps.value++;
+        displayImage(data.images[0]);
     };
 
     websocket.core.onerror = (error) => {
         console.error('WebSocket error:', error);
         endStream();
     };
+};
+
+const displayImage = (base64String: string) => {
+    if (!frame.value) return;
+
+    const ctx = frame.value.getContext('2d');
+    if (!ctx) return;
+
+    const image = new Image();
+    image.onload = () => {
+        ctx.clearRect(0, 0, frame.value!.width, frame.value!.height);
+        ctx.drawImage(image, 0, 0, frame.value!.width, frame.value!.height);
+    };
+    image.src = `data:image/jpeg;base64,${base64String}`;
 };
 
 const endStream = () => {
