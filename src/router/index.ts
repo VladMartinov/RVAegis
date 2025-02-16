@@ -55,15 +55,18 @@ const router = createRouter({
                     component: () => import("@/views/CamerasView.vue"),
                 },
                 {
-                  beforeEnter: (to, from, next) => {
-                      const imageStore = useImageStore();
+                    beforeEnter: (to, from, next) => {
+                        const imageStore = useImageStore();
+                        const authStore = useAuthStore();
+        
+                        if (to.meta.accessRole && !to.meta.accessRole.includes(authStore.currentUser?.userRoleId)) return;
 
-                      imageStore.fetchData()
-                          .then(() => {
-                              next();
-                          })
-                          .catch(() => {});
-                  },
+                        imageStore.fetchData()
+                            .then(() => {
+                                next();
+                            })
+                            .catch(() => {});
+                    },
                     path: "/images",
                     name: "images",
                     component: () => import("@/views/ImagesView.vue"),
@@ -71,6 +74,9 @@ const router = createRouter({
                 {
                     beforeEnter: (to, from, next) => {
                         const userStore = useUserStore();
+                        const authStore = useAuthStore();
+        
+                        if (to.meta.accessRole && !to.meta.accessRole.includes(authStore.currentUser?.userRoleId)) return;
 
                         userStore.fetchData()
                             .then(() => {
@@ -88,6 +94,9 @@ const router = createRouter({
                 {
                     beforeEnter: (to, from, next) => {
                         const historyStore = useHistoryStore();
+                        const authStore = useAuthStore();
+        
+                        if (to.meta.accessRole && !to.meta.accessRole.includes(authStore.currentUser?.userRoleId)) return;
 
                         historyStore.fetchData()
                             .then(() => {

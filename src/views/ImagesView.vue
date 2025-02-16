@@ -26,12 +26,12 @@
         <a-typography-title :level="4" :style="{ margin: '0px' }">Изображения</a-typography-title>
 
         <a-space>
-            <a-button type="primary" @click="handleAddImageButton">
+            <a-button v-if="authStore.currentUser?.userRoleId === UserRoleEnum.User || authStore.currentUser?.userRoleId === UserRoleEnum.Admin" type="primary" @click="handleAddImageButton">
                 <template #icon><plus-outlined /></template>
                 Добавить изображение
             </a-button>
   
-            <a-button v-if="selectedTableRows.length" danger @click="handleDeleteSelectedImagesButton">
+            <a-button v-if="selectedTableRows.length && (authStore.currentUser?.userRoleId === UserRoleEnum.User || authStore.currentUser?.userRoleId === UserRoleEnum.Admin)" danger @click="handleDeleteSelectedImagesButton">
                 <template #icon><delete-outlined /></template>
                 Удалить выбранные изображения
             </a-button>
@@ -42,7 +42,7 @@
           :pagination="{ position: ['bottomLeft'], showSizeChanger: true, showQuickJumper: true }"
           :columns="tableColumns"
           :data-source="tableData"
-          :row-selection="{ selectedRowKeys: selectedTableRows, onChange: onTableSelectChange }"
+          :row-selection="authStore.currentUser?.userRoleId === UserRoleEnum.User || authStore.currentUser?.userRoleId === UserRoleEnum.Admin ? { selectedRowKeys: selectedTableRows, onChange: onTableSelectChange } : null"
       >
           <template #bodyCell="{ column, record }">
             <template v-if="column.key === 'imagePhoto'">
@@ -121,6 +121,8 @@ import { getMimeType } from '@/utils/helper';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import type { ImageCDto, ImageUDto } from '@/api/interfaces';
+import { UserRoleEnum } from '@/utils/enum';
+import { useAuthStore } from '@/stores/authStore';
 
 interface TableData {
     key: number;
@@ -140,6 +142,7 @@ interface FormState {
 type RangeValue = [Dayjs, Dayjs];
 
 const { notification } = App.useApp();
+const authStore = useAuthStore();
 const imageStore = useImageStore();
 const collapseItems = ref([]);
 
@@ -192,13 +195,16 @@ const tableColumns = computed(() => {
                 multiple: 2,
             },
             key: 'dateCreate',
-        },
-        {
+        }
+    ];
+
+    if (authStore.currentUser?.userRoleId === UserRoleEnum.User || authStore.currentUser?.userRoleId === UserRoleEnum.Admin) {
+        columns.push({
             title: 'Действия',
             dataIndex: 'actions',
             key: 'actions',
-        }
-    ];
+        });
+    }
 
     return columns;
 });

@@ -11,13 +11,13 @@
                 <a-menu-item key="cameras">
                     <router-link to="/cameras">Камеры</router-link>
                 </a-menu-item>
-                <a-menu-item key="images">
+                <a-menu-item key="images" v-if="displayImageRoute">
                     <router-link to="/images">Изображения</router-link>
                 </a-menu-item>
-                <a-menu-item key="users">
+                <a-menu-item key="users" v-if="displayUserRoute">
                     <router-link to="/users">Пользователи</router-link>
                 </a-menu-item>
-                <a-menu-item key="history">
+                <a-menu-item key="history" v-if="displayHistoryRoute">
                     <router-link to="/history">Журнал</router-link>
                 </a-menu-item>
             </a-menu>
@@ -56,6 +56,7 @@ import { UserOutlined } from '@ant-design/icons-vue';
 import { RouterView, useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { getMimeType } from '@/utils/helper';
+import { UserRoleEnum } from '@/utils/enum';
 
 const route = useRoute();
 const authStore = useAuthStore();
@@ -69,5 +70,9 @@ const avatarLink = computed(() => {
     
     const mimeType = getMimeType(photo);
     return `data:${mimeType};base64,${photo}`;
-})
+});
+
+const displayImageRoute = computed(() => true);
+const displayUserRoute = computed(() => [UserRoleEnum.Observer, UserRoleEnum.Admin].includes(authStore.currentUser?.userRoleId as UserRoleEnum));
+const displayHistoryRoute = computed(() => [UserRoleEnum.Observer, UserRoleEnum.Admin].includes(authStore.currentUser?.userRoleId as UserRoleEnum));
 </script>

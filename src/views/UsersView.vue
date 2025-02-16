@@ -50,7 +50,7 @@
             :pagination="{ position: ['bottomLeft'], showSizeChanger: true, showQuickJumper: true }"
             :columns="tableColumns"
             :data-source="tableData"
-            :row-selection="{ selectedRowKeys: selectedTableRows, onChange: onTableSelectChange }"
+            :row-selection="authStore.currentUser?.userRoleId === UserRoleEnum.Admin ? { selectedRowKeys: selectedTableRows, onChange: onTableSelectChange } : null"
         >
             <template #bodyCell="{ column, record }">
               <template v-if="column.key === 'userPhoto'">
@@ -436,6 +436,7 @@ const resetModalFields = () => {
 
     formState.photoPreview = undefined;
     formState.photoFile = undefined;
+    formState.photoBlob = undefined;
 }
 
 // Обработка создания пользователя
@@ -470,7 +471,9 @@ const handleOkCreateButton = async () => {
         });
  
         modalOpen.value = false;
-        resetModalFields();
+        setTimeout(() => {
+            resetModalFields();
+        }, 500);
     } catch (error) {
         notification.error({
             message: 'Ошибка создания',
@@ -512,7 +515,9 @@ const handleOkUpdateButton = async () => {
         });
  
         modalOpen.value = false;
-        resetModalFields();
+        setTimeout(() => {
+            resetModalFields();
+        }, 500);
     } catch (error) {
         notification.error({
             message: 'Ошибка обновления',
