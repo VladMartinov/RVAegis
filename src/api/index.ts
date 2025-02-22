@@ -130,6 +130,10 @@ function configureInterceptors(
 class ApiService {
     public readonly instance: AxiosInstance;
     private authHandler: AuthHandler;
+    auth: any;
+    history: any;
+    image: any;
+    user: any;
 
     constructor() {
         this.instance = createAxiosInstance();

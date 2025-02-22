@@ -83,6 +83,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { useRoute } from 'vue-router';
 import { App } from 'ant-design-vue';
 import type { Rule } from 'ant-design-vue/es/form';
+import type { AxiosError } from 'axios';
 
 interface FormState {
     token: string;
@@ -149,7 +150,7 @@ const rules: Record<string, Rule[]> = {
 
 const handleUpdateButton = function(navigate: Function) {
     spin.value = true;
-    formState.token = route.query.token;
+    formState.token = Array.isArray(route.query.token) ? route.query.token[0] || '' : route.query.token?.toString() || '';
 
     authStore.resetPassword(formState)
         .then(() => {
@@ -161,10 +162,10 @@ const handleUpdateButton = function(navigate: Function) {
 
             navigate();
         })
-        .catch((error) => {
+        .catch((error: AxiosError) => {
             let errorMessage = '';
 
-            switch (error?.response?.status || 500) {
+            switch (error.response?.status || 500) {
                 case 400:
                     errorMessage = 'Произошла ошибка. Недействительный токен восстановления';
                     break;

@@ -113,6 +113,7 @@ const endStream = () => {
 
     websocket.core.close();
     websocket.core = null;
+    selectedCamera.value = null;
     isStreamActive.value = false;
 
     if (websocket.fpsUpdate) {

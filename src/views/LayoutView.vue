@@ -60,7 +60,7 @@ import { UserRoleEnum } from '@/utils/enum';
 
 const route = useRoute();
 const authStore = useAuthStore();
-const selectedKeys = ref<string[]>([route.name]);
+const selectedKeys = ref<string[]>([route.name as string]);
 
 const avatarLink = computed(() => {
     const photo = authStore.currentUser?.photo;

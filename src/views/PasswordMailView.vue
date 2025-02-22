@@ -53,6 +53,7 @@ import { reactive, computed, ref } from 'vue';
 import { App } from 'ant-design-vue';
 import type { Rule } from 'ant-design-vue/es/form';
 import { useAuthStore } from '@/stores/authStore';
+import type { AxiosError } from 'axios';
 
 interface FormState {
     email: string;
@@ -76,10 +77,10 @@ const handleSentButton = function(navigate: Function) {
         .then(() => {
             navigate();
         })
-        .catch((error) => {
+        .catch((error: AxiosError) => {
             let errorMessage = '';
 
-            switch (error.response.status) {
+            switch (error.response?.status) {
                 case 500:
                     errorMessage = 'Ошибка на сервере. Пожалуйста, попробуйте позже';
                     break;

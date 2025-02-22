@@ -6,6 +6,10 @@ import { useHistoryStore } from '@/stores/historyStore';
 import { useUserStore } from '@/stores/userStore';
 import { useImageStore } from '@/stores/imageStore';
 
+interface RouteMeta {
+    accessRole: number[];
+}
+
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
@@ -58,8 +62,8 @@ const router = createRouter({
                     beforeEnter: (to, from, next) => {
                         const imageStore = useImageStore();
                         const authStore = useAuthStore();
-        
-                        if (to.meta.accessRole && !to.meta.accessRole.includes(authStore.currentUser?.userRoleId)) return;
+
+                        if (Array.isArray(to.meta.accessRole) && !to.meta.accessRole.includes(authStore.currentUser?.userRoleId)) return;
 
                         imageStore.fetchData()
                             .then(() => {
@@ -75,8 +79,8 @@ const router = createRouter({
                     beforeEnter: (to, from, next) => {
                         const userStore = useUserStore();
                         const authStore = useAuthStore();
-        
-                        if (to.meta.accessRole && !to.meta.accessRole.includes(authStore.currentUser?.userRoleId)) return;
+
+                        if (Array.isArray(to.meta.accessRole) && !to.meta.accessRole.includes(authStore.currentUser?.userRoleId)) return;
 
                         userStore.fetchData()
                             .then(() => {
@@ -95,8 +99,8 @@ const router = createRouter({
                     beforeEnter: (to, from, next) => {
                         const historyStore = useHistoryStore();
                         const authStore = useAuthStore();
-        
-                        if (to.meta.accessRole && !to.meta.accessRole.includes(authStore.currentUser?.userRoleId)) return;
+
+                        if (Array.isArray(to.meta.accessRole) && !to.meta.accessRole.includes(authStore.currentUser?.userRoleId)) return;
 
                         historyStore.fetchData()
                             .then(() => {
