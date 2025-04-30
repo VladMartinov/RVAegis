@@ -70,7 +70,7 @@
       </a-table>
   </a-space>
 
-  <a-modal v-model:open="modalOpen" :title="isUpdateModal ? 'Обновить изображение' : 'Добавить изображение'">
+  <a-modal v-model:open="modalOpen" :title="isUpdateModal ? 'Обновить изображение' : 'Добавить изображение'" @cancel="handleCancelButton">
       <template #footer>
           <a-button key="back" @click="handleCancelButton">Отмена</a-button>
           <a-button key="submit" type="primary" :disabled="isUpdateModal ? !validateUpdateFields : !validateCreateFields" @click="isUpdateModal ? handleOkUpdateButton() : handleOkCreateButton()">{{ isUpdateModal ? 'Обновить' : 'Создать' }}</a-button>
@@ -312,6 +312,7 @@ const resetModalFields = () => {
 
     formState.photoPreview = undefined;
     formState.photoFile = undefined;
+    formState.photoBlob = undefined;
 }
 
 // Обработка создания изображения
