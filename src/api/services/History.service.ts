@@ -1,4 +1,4 @@
-import type { HistoryRecordDto, TypeActionDto } from "@/api/interfaces";
+import type { HistoryRecordDto, RecognitionLogDto, TypeActionDto } from "@/api/interfaces";
 
 export default (api: any) => {
     api.history = {
@@ -8,6 +8,10 @@ export default (api: any) => {
 
         getAllTypeActions(): Promise<{ data: TypeActionDto }> {
             return api.instance.get("/logs/type-actions");
+        },
+
+        getAllRecognitionLogs(): Promise<{ data: RecognitionLogDto }> {
+            return api.instance.get("/logs/recognition-logs");
         },
     };
 };

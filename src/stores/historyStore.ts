@@ -1,18 +1,20 @@
 import api from '@/api';
 import { defineStore } from 'pinia';
-import type { UserRDto, HistoryRecordDto, TypeActionDto } from '@/api/interfaces';
+import type { UserRDto, HistoryRecordDto, TypeActionDto, RecognitionLogDto } from '@/api/interfaces';
 
 interface HistoryState {
     users: UserRDto[];
-    records: HistoryRecordDto[];
+    operationRecords: HistoryRecordDto[];
     actionsTypes: TypeActionDto[];
+    recognitionRecords: RecognitionLogDto[];
 }
 
 export const useHistoryStore = defineStore('history', {
     state: (): HistoryState => ({
         users: [],
-        records: [],
+        operationRecords: [],
         actionsTypes: [],
+        recognitionRecords: [],
     }),
 
     actions: {
@@ -21,10 +23,12 @@ export const useHistoryStore = defineStore('history', {
                 api.user.getAllUsers(),
                 api.history.getAllHistoryRecords(),
                 api.history.getAllTypeActions(),
-            ]).then(([users, records, actionsTypes]) => {
+                api.history.getAllRecognitionLogs(),
+            ]).then(([users, operationRecords, actionsTypes, recognitionRecords]) => {
                 if (users?.data) this.users = users.data;
-                if (records?.data) this.records = records.data;
+                if (operationRecords?.data) this.operationRecords = operationRecords.data;
                 if (actionsTypes?.data) this.actionsTypes = actionsTypes.data;
+                if (recognitionRecords?.data) this.recognitionRecords = recognitionRecords.data;
             });
         }
     }

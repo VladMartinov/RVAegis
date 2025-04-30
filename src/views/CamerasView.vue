@@ -80,7 +80,7 @@ const startStream = () => {
         if (data.cameraIndex !== selectedCamera.value) return;
 
         fps.value++;
-        displayImage(data.images[0]);
+        displayImage(data.images);
     };
 
     websocket.core.onerror = (error) => {

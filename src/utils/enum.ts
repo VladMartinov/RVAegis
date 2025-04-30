@@ -9,3 +9,8 @@ export enum UserStatusEnum {
     Blocked = 2,
     Removed = 3,
 };
+
+export enum HistoryTabEnum {
+    SystemOperation = 1,
+    Recognition = 2,
+};
